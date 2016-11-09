@@ -80,11 +80,10 @@ gaugeChart = AmCharts.makeChart( "gaugediv", {
     }
 } );
 
-setInterval( randomValue, 5000 );
 
 // set random value
-function randomValue() {
-    var value = Math.round( Math.random() * 2000 );
+function setGaugeValue(value) {
+
     if ( gaugeChart ) {
         if ( gaugeChart.arrows ) {
             if ( gaugeChart.arrows[ 0 ] ) {
@@ -120,6 +119,10 @@ var chart = AmCharts.makeChart("chartdiv", {
     },
     "graphs": [{
         "id": "g1",
+        "lineColor":"#F95372",
+        //"useNegativeColorIfDown": true,
+        "negativeBase":1000,
+        "negativeLineColor": "#8BD25F",
         "balloon":{
             "drop":true,
             "adjustBorderColor":false,
@@ -134,16 +137,8 @@ var chart = AmCharts.makeChart("chartdiv", {
         "title": "red line",
         "useLineColorForBulletBorder": true,
         "valueField": "value",
-        "balloonText": "<span style='font-size:18px;'>[[value]]</span>"
-    }],/*
-     "trendLines": [{
-     "finalDate": "2013-01-11 12",
-     "finalValue": 60,
-     "initialDate": "2013-01-02 12",
-     "initialValue": 60,
-     "lineColor": "#CC0000",
-     "lineThickness":3
-     }],*/
+        "balloonText": "<span style='font-size:14px;'>[[value]]</span>"
+    }],
     "chartScrollbar": {
         "graph": "g1",
         "oppositeAxis":false,
@@ -195,24 +190,21 @@ function zoomChart() {
 
 function randomValue2() {
     var now = new Date();
-    var date = now.toJSON().substring(11,13);
-    if (date == "23") {
-        date = "00"
-    }
-    else {
-        date = (parseInt(date) + 1).toString();
-    }
-    var dateString = now.toJSON().substring(0,10) + " " + date + now.toJSON().substring(13,19);
+    var utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    var nd = new Date(utc + (3600000*1));
+    var time = nd.toTimeString().substring(0,8);
+    var dateString = nd.toJSON().substring(0,10) + " " + time;
     var value = getRandomArbitrary(0, 2000);
 
     chart.dataProvider.push( {"date":dateString,
         "value": value});
     chart.validateData();
+    setGaugeValue(chart.dataProvider[chart.dataProvider.length-1].value);
 }
 
 function getRandomArbitrary(min, max) {
-    return Math.random() * (max - min) + min;
+    return (Math.random() * (max - min) + min).toFixed(0);
 }
 randomValue2();
-setInterval(randomValue2,30000);
+setInterval(randomValue2,5000);
 
