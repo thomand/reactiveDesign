@@ -83,7 +83,6 @@ gaugeChart = AmCharts.makeChart( "gaugediv", {
 
 // set random value
 function setGaugeValue(value) {
-
     if ( gaugeChart ) {
         if ( gaugeChart.arrows ) {
             if ( gaugeChart.arrows[ 0 ] ) {
